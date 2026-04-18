@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreeHost — Deploy in Seconds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   DESIGN SYSTEM
+═══════════════════════════════════════ */
+:root {
+  --bg:        #050505;
+  --bg2:       #0c0c0e;
+  --bg3:       #111115;
+  --bg4:       #18181f;
+  --bg5:       #1e1e28;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --text:      #f5f5f8;
+  --text2:     #9898aa;
+  --text3:     #55556a;
+  --accent:    #e8ff59;
+  --accent2:   rgba(232,255,89,0.12);
+  --red:       #ff4d4f;
+  --green:     #4dff91;
+  --blue:      #4d9fff;
+  --purple:    #a855f7;
+  --orange:    #ff8c42;
+  --r:         10px;
+  --r2:        6px;
+  --fs:        'Geist', sans-serif;
+  --fm:        'Geist Mono', monospace;
+  --fd:        'Instrument Serif', serif;
+  --shadow:    0 8px 40px rgba(0,0,0,0.6);
+  --shadow2:   0 2px 12px rgba(0,0,0,0.4);
+  --trans:     0.18s ease;
+}
+[data-theme="light"] {
+  --bg:        #fafafa;
+  --bg2:       #ffffff;
+  --bg3:       #f4f4f6;
+  --bg4:       #ececf0;
+  --bg5:       #e4e4ea;
+  --border:    rgba(0,0,0,0.07);
+  --border2:   rgba(0,0,0,0.12);
+  --text:      #0c0c0e;
+  --text2:     #55556a;
+  --text3:     #9898aa;
+  --shadow:    0 8px 40px rgba(0,0,0,0.12);
+  --shadow2:   0 2px 12px rgba(0,0,0,0.08);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fs);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:15px;line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+button{font-family:var(--fs);cursor:pointer;}
+input,textarea,select{font-family:var(--fs);font-size:14px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:var(--r2);padding:10px 14px;outline:none;transition:border-color var(--trans),box-shadow var(--trans);width:100%;}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,255,89,0.15);}
+input::placeholder,textarea::placeholder{color:var(--text3);}
+textarea{resize:vertical;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+code,pre{font-family:var(--fm);}
+
+/* ── PAGES ── */
+.page{display:none;}
+.page.active{display:block;}
+.app-shell{display:none;height:100vh;overflow:hidden;}
+.app-shell.active{display:flex;}
+
+/* ════════════════════════════════════
+   BUTTONS
+════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:var(--r2);font-size:.875rem;font-weight:500;border:none;transition:all var(--trans);white-space:nowrap;cursor:pointer;}
+.btn-primary{background:var(--accent);color:#000;font-weight:600;}
+.btn-primary:hover{background:#d4eb50;transform:translateY(-1px);box-shadow:0 4px 20px rgba(232,255,89,0.3);}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2);}
+.btn-ghost:hover{background:var(--bg3);color:var(--text);border-color:var(--border2);}
+.btn-danger{background:rgba(255,77,79,0.12);color:var(--red);border:1px solid rgba(255,77,79,0.25);}
+.btn-danger:hover{background:rgba(255,77,79,0.2);}
+.btn-sm{padding:6px 13px;font-size:.8rem;}
+.btn-lg{padding:13px 28px;font-size:1rem;font-weight:600;}
+.btn-full{width:100%;justify-content:center;}
+.btn-icon{background:transparent;border:none;color:var(--text2);padding:6px;border-radius:6px;display:inline-flex;align-items:center;transition:all var(--trans);}
+.btn-icon:hover{background:var(--bg3);color:var(--text);}
+
+/* ════════════════════════════════════
+   LANDING PAGE
+════════════════════════════════════ */
+#page-landing{background:var(--bg);min-height:100vh;}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;border-bottom:1px solid var(--border);backdrop-filter:blur(20px);background:rgba(5,5,5,0.7);}
+[data-theme="light"] .nav{background:rgba(250,250,250,0.8);}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;gap:32px;}
+.wordmark{font-family:var(--fd);font-size:1.35rem;font-style:italic;letter-spacing:-0.3px;}
+.wordmark span{color:var(--accent);}
+.nav-links{display:flex;gap:24px;margin-left:auto;}
+.nav-links a{color:var(--text2);font-size:.875rem;transition:color var(--trans);}
+.nav-links a:hover{color:var(--text);}
+.nav-actions{display:flex;gap:10px;}
+.nav-actions .theme-toggle{background:none;border:1px solid var(--border2);color:var(--text2);padding:6px 10px;border-radius:6px;font-size:.8rem;transition:all var(--trans);}
+.nav-actions .theme-toggle:hover{background:var(--bg3);color:var(--text);}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px 60px;position:relative;overflow:hidden;}
+.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(232,255,89,0.06) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 0%,transparent 100%);pointer-events:none;}
+.hero-content{text-align:center;max-width:760px;position:relative;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);padding:5px 14px;border-radius:100px;font-size:.78rem;color:var(--text2);margin-bottom:28px;font-family:var(--fm);}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.hero-title{font-family:var(--fd);font-size:clamp(3rem,7vw,5.5rem);line-height:1.05;font-weight:400;letter-spacing:-1.5px;margin-bottom:24px;}
+.hero-title em{font-style:italic;color:var(--accent);}
+.hero-sub{color:var(--text2);font-size:1.1rem;max-width:520px;margin:0 auto 40px;line-height:1.7;}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:60px;}
+.hero-stats{display:flex;gap:48px;justify-content:center;flex-wrap:wrap;}
+.h-stat{text-align:center;}
+.h-stat-n{font-family:var(--fd);font-size:2rem;font-style:italic;}
+.h-stat-l{font-size:.78rem;color:var(--text2);margin-top:2px;}
+
+/* Showcase */
+.showcase{max-width:1100px;margin:0 auto;padding:80px 24px;}
+.section-label{font-family:var(--fm);font-size:.72rem;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.section-title{font-family:var(--fd);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:400;letter-spacing:-0.5px;margin-bottom:48px;}
+.showcase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+.showcase-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color var(--trans),transform var(--trans);}
+.showcase-card:hover{border-color:var(--border2);transform:translateY(-3px);}
+.sc-thumb{height:160px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;border-bottom:1px solid var(--border);}
+.sc-body{padding:16px;}
+.sc-name{font-weight:600;font-size:.9rem;margin-bottom:4px;}
+.sc-url{font-family:var(--fm);font-size:.75rem;color:var(--accent);}
+.sc-meta{font-size:.75rem;color:var(--text3);margin-top:6px;}
+
+/* Pricing */
+.pricing-section{max-width:900px;margin:0 auto;padding:80px 24px;}
+.pricing-card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:40px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;}
+.pricing-head .price{font-family:var(--fd);font-size:3rem;font-style:italic;}
+.pricing-head .price-sub{color:var(--text2);font-size:.9rem;}
+.pricing-badge{display:inline-block;background:var(--accent2);color:var(--accent);border:1px solid rgba(232,255,89,0.3);padding:4px 12px;border-radius:100px;font-size:.75rem;font-weight:600;margin-bottom:16px;}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.pricing-features li{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--text2);}
+.pricing-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;}
+
+/* CTA Banner */
+.cta-banner{background:var(--accent);border-radius:16px;padding:48px;text-align:center;margin:0 24px 80px;max-width:1100px;margin-left:auto;margin-right:auto;}
+.cta-banner h2{font-family:var(--fd);font-size:2.2rem;color:#000;margin-bottom:8px;}
+.cta-banner p{color:rgba(0,0,0,0.6);margin-bottom:24px;}
+.cta-banner .btn-cta{background:#000;color:#fff;padding:13px 28px;border-radius:8px;font-weight:600;font-size:1rem;border:none;cursor:pointer;transition:all var(--trans);}
+.cta-banner .btn-cta:hover{background:#111;transform:translateY(-1px);}
+
+/* Footer */
+.footer{border-top:1px solid var(--border);padding:32px 24px;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.footer-links{display:flex;gap:20px;}
+.footer-links a{color:var(--text3);font-size:.82rem;transition:color var(--trans);}
+.footer-links a:hover{color:var(--text);}
+.footer-copy{color:var(--text3);font-size:.82rem;}
+
+/* ════════════════════════════════════
+   AUTH PAGE
+════════════════════════════════════ */
+#page-auth{min-height:100vh;display:none;align-items:center;justify-content:center;background:var(--bg);padding:24px;}
+#page-auth.active{display:flex;}
+.auth-box{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:40px;width:100%;max-width:420px;box-shadow:var(--shadow);}
+.auth-box .wordmark{display:block;text-align:center;margin-bottom:28px;font-size:1.5rem;}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:28px;}
+.auth-tab{flex:1;text-align:center;padding:10px;font-size:.875rem;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all var(--trans);}
+.auth-tab.active{color:var(--text);border-bottom-color:var(--accent);}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:.82rem;color:var(--text2);margin-bottom:6px;font-weight:500;}
+.form-error{background:rgba(255,77,79,0.1);border:1px solid rgba(255,77,79,0.3);color:var(--red);padding:10px 14px;border-radius:var(--r2);font-size:.82rem;margin-bottom:16px;display:none;}
+.form-error.show{display:block;}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--text3);font-size:.8rem;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.auth-demo{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:12px 14px;font-size:.8rem;color:var(--text2);margin-top:14px;}
+.auth-demo strong{color:var(--accent);}
+
+/* ════════════════════════════════════
+   APP SHELL
+════════════════════════════════════ */
+.app-sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;height:100vh;overflow-y:auto;}
+.sidebar-header{padding:16px 16px 8px;border-bottom:1px solid var(--border);}
+.sidebar-header .wordmark{font-size:1.15rem;}
+.sidebar-nav{padding:12px 8px;flex:1;}
+.nav-section-label{font-family:var(--fm);font-size:.65rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase;padding:8px 8px 4px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r2);color:var(--text2);font-size:.875rem;cursor:pointer;transition:all var(--trans);margin-bottom:1px;}
+.nav-item:hover{background:var(--bg3);color:var(--text);}
+.nav-item.active{background:var(--bg3);color:var(--text);}
+.nav-item .nav-icon{width:16px;text-align:center;flex-shrink:0;font-size:.875rem;}
+.nav-item .nav-badge{margin-left:auto;background:var(--bg4);color:var(--text3);font-size:.65rem;padding:1px 6px;border-radius:100px;font-family:var(--fm);}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border);}
+.user-card{display:flex;align-items:center;gap:9px;padding:8px;border-radius:var(--r2);cursor:pointer;transition:background var(--trans);}
+.user-card:hover{background:var(--bg3);}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#000;flex-shrink:0;}
+.user-info-name{font-size:.82rem;font-weight:600;}
+.user-info-role{font-size:.7rem;color:var(--text3);}
+.user-info-role.admin{color:var(--accent);}
+
+.app-main{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.main-topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;background:var(--bg);}
+.main-topbar-title{font-weight:600;font-size:.95rem;}
+.main-topbar-actions{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.main-content{flex:1;overflow-y:auto;padding:28px;}
+.main-content::-webkit-scrollbar{width:4px;}
+
+/* Panels / tabs */
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* ════════════════════════════════════
+   DASHBOARD HOME
+════════════════════════════════════ */
+.dash-greeting{margin-bottom:28px;}
+.dash-greeting h2{font-family:var(--fd);font-size:1.8rem;font-weight:400;margin-bottom:4px;}
+.dash-greeting p{color:var(--text2);font-size:.9rem;}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:28px;}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.stat-box-value{font-family:var(--fd);font-size:1.8rem;font-style:italic;margin-bottom:2px;}
+.stat-box-label{font-size:.78rem;color:var(--text2);}
+.stat-box-trend{font-size:.72rem;color:var(--green);margin-top:4px;}
+
+/* Sites list in dashboard */
+.sites-list{display:flex;flex-direction:column;gap:12px;}
+.site-row{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;display:flex;align-items:center;gap:14px;transition:border-color var(--trans);}
+.site-row:hover{border-color:var(--border2);}
+.site-row-icon{width:36px;height:36px;border-radius:8px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.site-row-info{flex:1;min-width:0;}
+.site-row-name{font-weight:600;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.site-row-url{font-family:var(--fm);font-size:.75rem;color:var(--accent);margin-top:1px;}
+.site-row-meta{font-size:.75rem;color:var(--text3);margin-top:2px;}
+.site-status{padding:3px 9px;border-radius:100px;font-size:.7rem;font-weight:600;font-family:var(--fm);}
+.site-status.live{background:rgba(77,255,145,0.12);color:var(--green);}
+.site-status.draft{background:var(--bg4);color:var(--text3);}
+.site-row-actions{display:flex;gap:6px;}
+
+/* ════════════════════════════════════
+   NEW SITE MODAL / INLINE
+════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:32px;width:100%;max-width:500px;box-shadow:var(--shadow);animation:modalIn .2s ease;}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.modal-header h3{font-family:var(--fd);font-size:1.3rem;font-weight:400;}
+.modal-close{background:none;border:none;color:var(--text2);font-size:1.2rem;cursor:pointer;padding:4px 8px;border-radius:4px;}
+.modal-close:hover{background:var(--bg3);color:var(--text);}
+.subdomain-input-wrap{display:flex;align-items:center;border:1px solid var(--border2);border-radius:var(--r2);overflow:hidden;background:var(--bg3);transition:border-color var(--trans),box-shadow var(--trans);}
+.subdomain-input-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,255,89,0.15);}
+.subdomain-input-wrap input{border:none;background:transparent;border-radius:0;padding-right:0;flex:1;}
+.subdomain-input-wrap input:focus{box-shadow:none;}
+.subdomain-suffix{color:var(--text3);font-family:var(--fm);font-size:.82rem;padding:0 12px;white-space:nowrap;}
+.domain-avail{font-size:.78rem;margin-top:5px;font-family:var(--fm);}
+.domain-avail.ok{color:var(--green);}
+.domain-avail.taken{color:var(--red);}
+
+/* ════════════════════════════════════
+   CODE EDITOR
+════════════════════════════════════ */
+.editor-shell{display:none;flex-direction:column;height:100vh;width:100%;}
+.editor-shell.active{display:flex;}
+.editor-topbar{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;}
+.editor-site-name{font-family:var(--fd);font-style:italic;font-size:1rem;color:var(--text);}
+.editor-site-url{font-family:var(--fm);font-size:.72rem;color:var(--accent);}
+.editor-status{font-family:var(--fm);font-size:.72rem;padding:3px 9px;border-radius:100px;}
+.editor-status.saved{background:rgba(77,255,145,0.12);color:var(--green);}
+.editor-status.unsaved{background:rgba(255,140,66,0.12);color:var(--orange);}
+.editor-deploy-btn{margin-left:auto;}
+
+.editor-body{flex:1;display:flex;overflow:hidden;}
+
+/* File tree */
+.file-tree{width:200px;background:var(--bg2);border-right:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;}
+.file-tree-header{padding:10px 12px;border-bottom:1px solid var(--border);font-size:.72rem;color:var(--text3);font-family:var(--fm);display:flex;align-items:center;justify-content:space-between;}
+.file-tree-items{flex:1;overflow-y:auto;padding:4px;}
+.ft-item{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:5px;cursor:pointer;font-size:.82rem;color:var(--text2);transition:all var(--trans);}
+.ft-item:hover{background:var(--bg3);color:var(--text);}
+.ft-item.active{background:var(--bg4);color:var(--text);}
+.ft-icon{font-size:.8rem;flex-shrink:0;}
+.ft-item.folder{color:var(--text2);}
+
+/* Code area + preview */
+.editor-panes{flex:1;display:flex;overflow:hidden;}
+.code-pane{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--border);}
+.code-pane-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);}
+.code-tab{padding:8px 16px;font-size:.78rem;font-family:var(--fm);color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all var(--trans);}
+.code-tab.active{color:var(--text);border-bottom-color:var(--accent);background:var(--bg3);}
+.code-tab-close{margin-left:6px;opacity:0.5;font-size:.7rem;}
+.code-tab-close:hover{opacity:1;}
+.code-editor-wrap{flex:1;overflow:hidden;position:relative;}
+.code-area{width:100%;height:100%;resize:none;background:var(--bg);border:none;border-radius:0;padding:16px 20px;font-family:var(--fm);font-size:13px;line-height:1.7;color:var(--text);caret-color:var(--accent);}
+.code-area:focus{box-shadow:none;border:none;}
+.line-numbers{position:absolute;left:0;top:0;width:44px;padding:16px 8px;font-family:var(--fm);font-size:13px;line-height:1.7;color:var(--text3);text-align:right;pointer-events:none;background:var(--bg);border-right:1px solid var(--border);}
+.code-area-with-numbers{padding-left:58px;}
+
+/* Preview pane */
+.preview-pane{width:45%;display:flex;flex-direction:column;flex-shrink:0;}
+.preview-toolbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--bg2);}
+.preview-url-bar{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:4px 10px;font-family:var(--fm);font-size:.75rem;color:var(--text2);}
+.preview-frame{flex:1;border:none;background:white;}
+
+/* Deploy log */
+.deploy-log{background:var(--bg);border-top:1px solid var(--border);height:0;overflow:hidden;transition:height .3s ease;font-family:var(--fm);font-size:.78rem;}
+.deploy-log.open{height:160px;overflow-y:auto;padding:12px 16px;}
+.log-line{margin-bottom:3px;color:var(--text2);}
+.log-line.success{color:var(--green);}
+.log-line.info{color:var(--blue);}
+.log-line.error{color:var(--red);}
+
+/* ════════════════════════════════════
+   ADMIN DASHBOARD
+════════════════════════════════════ */
+.admin-banner{background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);border-radius:var(--r2);padding:10px 14px;margin-bottom:24px;display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--purple);}
+
+/* Analytics charts */
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:24px;}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;}
+.chart-card-title{font-size:.82rem;font-weight:600;color:var(--text2);margin-bottom:16px;}
+.bar-chart{display:flex;align-items:flex-end;gap:3px;height:80px;}
+.bar{flex:1;border-radius:3px 3px 0 0;background:var(--bg4);transition:background var(--trans);cursor:pointer;min-height:4px;}
+.bar:hover{background:var(--accent);}
+.bar.highlight{background:rgba(232,255,89,0.4);}
+.chart-labels{display:flex;gap:3px;margin-top:4px;}
+.chart-label{flex:1;font-size:.6rem;color:var(--text3);text-align:center;font-family:var(--fm);}
+.donut-wrap{display:flex;align-items:center;gap:20px;}
+.donut{width:80px;height:80px;border-radius:50%;background:conic-gradient(var(--accent) 0deg 230deg, var(--blue) 230deg 290deg, var(--purple) 290deg 340deg, var(--bg4) 340deg 360deg);flex-shrink:0;}
+.donut-legend{display:flex;flex-direction:column;gap:7px;}
+.donut-item{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--text2);}
+.donut-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* Data tables */
+.data-table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.data-table-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.data-table-header h3{font-size:.9rem;font-weight:600;}
+.table-search{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px 12px;font-size:.8rem;width:220px;color:var(--text);}
+.table-search:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(232,255,89,0.1);}
+.data-table{width:100%;border-collapse:collapse;}
+.data-table th{padding:10px 16px;text-align:left;font-size:.72rem;color:var(--text3);font-family:var(--fm);font-weight:500;letter-spacing:0.5px;background:var(--bg3);border-bottom:1px solid var(--border);}
+.data-table td{padding:12px 16px;font-size:.83rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tbody tr:hover{background:rgba(255,255,255,0.02);}
+.table-actions{display:flex;gap:5px;}
+.tag{display:inline-block;padding:2px 8px;border-radius:100px;font-size:.7rem;font-weight:600;font-family:var(--fm);}
+.tag-active{background:rgba(77,255,145,0.12);color:var(--green);}
+.tag-suspended{background:rgba(255,77,79,0.12);color:var(--red);}
+.tag-admin{background:rgba(168,85,247,0.12);color:var(--purple);}
+.tag-live{background:rgba(77,255,145,0.12);color:var(--green);}
+.tag-draft{background:var(--bg4);color:var(--text3);}
+
+/* Settings */
+.settings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;}
+.settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px;}
+.settings-card h3{font-size:.9rem;font-weight:600;margin-bottom:18px;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.settings-row-label{font-size:.85rem;}
+.settings-row-sub{font-size:.75rem;color:var(--text2);margin-top:2px;}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--bg4);border-radius:100px;transition:.3s;cursor:pointer;}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:var(--text3);border-radius:50%;transition:.3s;}
+.toggle input:checked + .toggle-slider{background:var(--accent);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(18px);background:#000;}
+
+/* Log viewer */
+.log-viewer{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:16px;height:200px;overflow-y:auto;font-family:var(--fm);font-size:.78rem;}
+
+/* ════════════════════════════════════
+   TOAST
+════════════════════════════════════ */
+#toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:360px;}
+.toast{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);animation:toastIn .25s ease;font-size:.85rem;}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+.toast-icon{flex-shrink:0;font-size:.95rem;}
+.toast-body{flex:1;}
+.toast-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:.9rem;padding:0 2px;}
+
+/* ════════════════════════════════════
+   MISC
+════════════════════════════════════ */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text2);}
+.empty-state-icon{font-size:3rem;margin-bottom:12px;}
+.empty-state h3{font-family:var(--fd);font-size:1.2rem;font-weight:400;margin-bottom:6px;}
+.empty-state p{font-size:.85rem;margin-bottom:20px;}
+.confirm-dialog{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:2000;display:none;align-items:center;justify-content:center;}
+.confirm-dialog.open{display:flex;}
+.confirm-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:28px;max-width:380px;width:100%;box-shadow:var(--shadow);}
+.confirm-box h3{font-size:1rem;font-weight:600;margin-bottom:8px;}
+.confirm-box p{color:var(--text2);font-size:.85rem;margin-bottom:20px;}
+.confirm-box .actions{display:flex;gap:8px;justify-content:flex-end;}
+
+@media (max-width:768px) {
+  .app-sidebar{display:none;}
+  .pricing-card{grid-template-columns:1fr;}
+  .hero-title{font-size:2.8rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LANDING PAGE
+══════════════════════════════════════════ -->
+<div id="page-landing" class="page active">
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="wordmark">Free<span>Host</span></div>
+      <div class="nav-links">
+        <a href="#showcase" onclick="smoothScroll('showcase')">Examples</a>
+        <a href="#pricing" onclick="smoothScroll('pricing')">Pricing</a>
+        <a href="#">Docs</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" onclick="toggleTheme()">◐ Theme</button>
+        <button class="btn btn-ghost btn-sm" onclick="showAuth('login')">Sign in</button>
+        <button class="btn btn-primary btn-sm" onclick="showAuth('signup')">Start Building</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">🟢 Serving 12,400+ sites worldwide</div>
+      <h1 class="hero-title">
+        Deploy your site<br>
+        <em>in seconds</em> — for free.
+      </h1>
+      <p class="hero-sub">Write code in your browser, hit deploy, and your site is live on a custom subdomain. No setup. No credit card. No limits on creativity.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-lg" onclick="showAuth('signup')">Start Building →</button>
+        <button class="btn btn-ghost btn-lg" onclick="showAuth('login')">Sign In</button>
+      </div>
+      <div class="hero-stats">
+        <div class="h-stat"><div class="h-stat-n">100MB</div><div class="h-stat-l">Free Storage</div></div>
+        <div class="h-stat"><div class="h-stat-n">10GB</div><div class="h-stat-l">Monthly Bandwidth</div></div>
+        <div class="h-stat"><div class="h-stat-n">∞</div><div class="h-stat-l">Deployments</div></div>
+        <div class="h-stat"><div class="h-stat-n">99.9%</div><div class="h-stat-l">Uptime SLA</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="showcase" class="showcase">
+    <div class="section-label">Community Showcase</div>
+    <h2 class="section-title">Built on FreeHost</h2>
+    <div class="showcase-grid">
+      <div class="showcase-card"><div class="sc-thumb" style="background:linear-gradient(135deg,#1a1a2e,#16213e)">🎨</div><div class="sc-body"><div class="sc-name">Creative Portfolio</div><div class="sc-url">alexdesign.freehost.com</div><div class="sc-meta">HTML · CSS · 2.4 MB · 8.2k visits</div></div></div>
+      <div class="showcase-card"><div class="sc-thumb" style="background:linear-gradient(135deg,#0d2137,#1b4f72)">📝</div><div class="sc-body"><div class="sc-name">Dev Blog</div><div class="sc-url">jakesblog.freehost.com</div><div class="sc-meta">HTML · JS · 1.1 MB · 12k visits</div></div></div>
+      <div class="showcase-card"><div class="sc-thumb" style="background:linear-gradient(135deg,#1a0533,#4a0080)">🛒</div><div class="sc-body"><div class="sc-name">Landing Page</div><div class="sc-url">sarahlaunch.freehost.com</div><div class="sc-meta">HTML · CSS · JS · 3.8 MB · 4.1k visits</div></div></div>
+      <div class="showcase-card"><div class="sc-thumb" style="background:linear-gradient(135deg,#0a2e0a,#1a5c1a)">📊</div><div class="sc-body"><div class="sc-name">Data Dashboard</div><div class="sc-url">mikedash.freehost.com</div><div class="sc-meta">HTML · CSS · JS · 1.9 MB · 2.7k visits</div></div></div>
+    </div>
+  </section>
+
+  <section id="pricing" class="pricing-section">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Always free. No catch.</h2>
+    <div class="pricing-card">
+      <div class="pricing-head">
+        <div class="pricing-badge">Free Forever</div>
+        <div class="price">$0 <span style="font-size:1.2rem;font-style:normal;color:var(--text2)">/ month</span></div>
+        <div class="price-sub" style="margin-top:4px;color:var(--text2)">No credit card required</div>
+        <button class="btn btn-primary btn-lg" style="margin-top:20px;" onclick="showAuth('signup')">Get started now</button>
+      </div>
+      <ul class="pricing-features">
+        <li>100 MB storage per site</li>
+        <li>10 GB monthly bandwidth</li>
+        <li>Unlimited deployments</li>
+        <li>Browser-based code editor</li>
+        <li>Live preview while editing</li>
+        <li>Custom subdomain (*.freehost.com)</li>
+        <li>Custom domain support (CNAME)</li>
+        <li>HTTPS (SSL) automatic</li>
+        <li>Deployment history & logs</li>
+        <li>Up to 5 sites per account</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="cta-banner">
+    <h2>Ready to ship something?</h2>
+    <p>Join 12,000+ developers already hosting on FreeHost.</p>
+    <button class="btn-cta" onclick="showAuth('signup')">Create your free account →</button>
+  </div>
+
+  <footer class="footer">
+    <div class="wordmark">Free<span>Host</span></div>
+    <div class="footer-links">
+      <a href="#">Terms</a><a href="#">Privacy</a><a href="#">Status</a><a href="#">Docs</a>
+    </div>
+    <div class="footer-copy">© 2026 FreeHost. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════
+     AUTH PAGE
+══════════════════════════════════════════ -->
+<div id="page-auth" class="page">
+  <div class="auth-box">
+    <div class="wordmark">Free<span>Host</span></div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+      <div class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Create Account</div>
+    </div>
+    <div id="auth-error" class="form-error"></div>
+    <div id="login-form">
+      <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com" value="user@demo.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" value="demo1234"></div>
+      <button class="btn btn-primary btn-full" style="margin-top:4px;" onclick="handleLogin()">Sign In</button>
+      <div class="auth-divider">or</div>
+      <button class="btn btn-ghost btn-full" onclick="handleAdminLogin()">🛡 Sign in as Admin (demo)</button>
+      <div class="auth-demo">💡 Demo: <strong>user@demo.com / demo1234</strong> — pre-filled above. Click Sign In.</div>
+    </div>
+    <div id="signup-form" style="display:none;">
+      <div class="form-group"><label>Email</label><input type="email" id="signup-email" placeholder="you@example.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="signup-password" placeholder="At least 8 characters"></div>
+      <div class="form-group"><label>Username</label><input type="text" id="signup-username" placeholder="cooldev" maxlength="20"></div>
+      <button class="btn btn-primary btn-full" onclick="handleSignup()">Create Account</button>
+    </div>
+    <p style="text-align:center;margin-top:16px;font-size:.8rem;color:var(--text3)"><a href="#" onclick="showLanding()" style="color:var(--text2);">← Back to home</a></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP SHELL (User + Admin Dashboard)
+══════════════════════════════════════════ -->
+<div id="app-shell" class="app-shell">
+  <!-- Sidebar -->
+  <aside class="app-sidebar" id="app-sidebar">
+    <div class="sidebar-header">
+      <div class="wordmark">Free<span>Host</span></div>
+    </div>
+    <nav class="sidebar-nav" id="sidebar-nav">
+      <!-- populated by JS -->
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card" onclick="openUserMenu()">
+        <div class="user-avatar" id="user-avatar-init">U</div>
+        <div>
+          <div class="user-info-name" id="user-info-name">User</div>
+          <div class="user-info-role" id="user-info-role">Free Plan</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        <button class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;" onclick="toggleTheme()">◐</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;" onclick="handleLogout()">Sign out</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main area -->
+  <div class="app-main" id="app-main">
+    <div class="main-topbar">
+      <div class="main-topbar-title" id="topbar-title">Dashboard</div>
+      <div class="main-topbar-actions">
+        <button class="btn btn-ghost btn-sm" onclick="handleLogout()">Sign out</button>
+      </div>
+    </div>
+    <div class="main-content" id="main-content">
+      <!-- All panels rendered here by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EDITOR SHELL (full-screen)
+══════════════════════════════════════════ -->
+<div id="editor-shell" class="editor-shell">
+  <div class="editor-topbar">
+    <button class="btn btn-ghost btn-sm" onclick="closeEditor()">← Dashboard</button>
+    <span class="editor-site-name" id="ed-site-name">mysite</span>
+    <span class="editor-site-url" id="ed-site-url">mysite.freehost.com</span>
+    <span class="editor-status" id="ed-status">saved</span>
+    <div class="editor-deploy-btn">
+      <button class="btn btn-primary btn-sm" onclick="deployFromEditor()">🚀 Deploy</button>
+    </div>
+  </div>
+  <div class="editor-body">
+    <!-- File tree -->
+    <div class="file-tree">
+      <div class="file-tree-header">
+        <span>FILES</span>
+        <button class="btn-icon" onclick="addNewFile()" title="New file">+</button>
+      </div>
+      <div class="file-tree-items" id="file-tree-items"></div>
+    </div>
+    <!-- Editor + Preview -->
+    <div class="editor-panes">
+      <div class="code-pane">
+        <div class="code-pane-tabs" id="code-tabs"></div>
+        <div class="code-editor-wrap">
+          <div class="line-numbers" id="line-numbers">1</div>
+          <textarea class="code-area code-area-with-numbers" id="code-area" spellcheck="false" oninput="onCodeChange()" onscroll="syncLineNumbers()"></textarea>
+        </div>
+        <div class="deploy-log" id="deploy-log"></div>
+      </div>
+      <div class="preview-pane">
+        <div class="preview-toolbar">
+          <span style="font-size:.75rem;color:var(--text3);font-family:var(--fm);">PREVIEW</span>
+          <div class="preview-url-bar" id="preview-url-bar">about:blank</div>
+          <button class="btn-icon" onclick="refreshPreview()" title="Refresh">↻</button>
+          <button class="btn-icon" onclick="togglePreviewSize()" title="Resize">⊞</button>
+        </div>
+        <iframe class="preview-frame" id="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════ -->
+<!-- New Site Modal -->
+<div class="modal-overlay" id="modal-newsite" onclick="closeModal('modal-newsite')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Create a new site</h3>
+      <button class="modal-close" onclick="closeModal('modal-newsite')">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Subdomain</label>
+      <div class="subdomain-input-wrap">
+        <input type="text" id="new-site-subdomain" placeholder="mycoolsite" maxlength="30" oninput="checkSubdomainAvailability(this.value)" style="padding-right:4px;">
+        <span class="subdomain-suffix">.freehost.com</span>
+      </div>
+      <div class="domain-avail" id="subdomain-avail-msg"></div>
+    </div>
+    <div class="form-group">
+      <label>Template</label>
+      <select id="new-site-template">
+        <option value="blank">Blank</option>
+        <option value="portfolio">Portfolio</option>
+        <option value="blog">Simple Blog</option>
+        <option value="landing">Landing Page</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="createSite()">Create Site</button>
+  </div>
+</div>
+
+<!-- Custom Domain Modal -->
+<div class="modal-overlay" id="modal-domain" onclick="closeModal('modal-domain')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Custom Domain</h3>
+      <button class="modal-close" onclick="closeModal('modal-domain')">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Your domain</label>
+      <input type="text" id="custom-domain-input" placeholder="mysite.com">
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:14px;margin-bottom:16px;">
+      <div style="font-size:.78rem;font-weight:600;margin-bottom:8px;color:var(--text2);">DNS Configuration</div>
+      <div style="font-family:var(--fm);font-size:.75rem;color:var(--text2);line-height:1.8;">
+        Add a <strong style="color:var(--accent);">CNAME</strong> record pointing to:<br>
+        <strong style="color:var(--text);">cname.freehost.com</strong><br><br>
+        Or an <strong style="color:var(--accent);">A</strong> record to:<br>
+        <strong style="color:var(--text);">45.33.78.201</strong>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveDomain()">Save & Verify</button>
+  </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="confirm-dialog" id="confirm-dialog">
+  <div class="confirm-box">
+    <h3 id="confirm-title">Are you sure?</h3>
+    <p id="confirm-body">This action cannot be undone.</p>
+    <div class="actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger btn-sm" id="confirm-ok" onclick="">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────────
+   STATE
+───────────────────────────────────────── */
+const CURRENT_USER_KEY = 'fh_user';
+let currentUser = null;
+let editorSite = null;
+let editorFiles = {};
+let activeFile = null;
+let previewTimeout = null;
+let saveTimeout = null;
+
+const TEMPLATE_FILES = {
+  blank: {
+    'index.html': `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>My Site</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <h1>Hello, World!</h1>\n  <p>Edit this file to get started.</p>\n  <script src="app.js"><\/script>\n</body>\n</html>`,
+    'style.css': `* { box-sizing: border-box; margin: 0; padding: 0; }\nbody {\n  font-family: system-ui, sans-serif;\n  background: #0f0f0f;\n  color: #f0f0f0;\n  min-height: 100vh;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 24px;\n}\nh1 { font-size: 3rem; margin-bottom: 12px; }\np { color: #888; }`,
+    'app.js': `// Your JavaScript goes here\nconsole.log('Site loaded!');`
+  },
+  portfolio: {
+    'index.html': `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>Portfolio</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <header>\n    <h1>Jane Doe</h1>\n    <p>Full Stack Developer</p>\n  </header>\n  <main>\n    <section class="projects">\n      <h2>Projects</h2>\n      <div class="grid">\n        <div class="card">Project One</div>\n        <div class="card">Project Two</div>\n        <div class="card">Project Three</div>\n      </div>\n    </section>\n  </main>\n</body>\n</html>`,
+    'style.css': `body { font-family: Georgia, serif; background: #fff; color: #111; }\nheader { text-align: center; padding: 80px 20px; background: #111; color: #fff; }\nh1 { font-size: 3rem; margin-bottom: 8px; }\n.projects { max-width: 900px; margin: 60px auto; padding: 0 20px; }\nh2 { font-size: 1.5rem; margin-bottom: 24px; }\n.grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }\n.card { background: #f5f5f5; padding: 40px; border-radius: 8px; text-align: center; }`,
+    'app.js': `console.log('Portfolio loaded');`
+  },
+  blog: {
+    'index.html': `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>My Blog</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <div class="container">\n    <h1>My Blog</h1>\n    <article>\n      <h2>Hello World</h2>\n      <time>April 18, 2026</time>\n      <p>This is my first post! I'm excited to share my thoughts here.</p>\n    </article>\n    <article>\n      <h2>Getting Started</h2>\n      <time>April 15, 2026</time>\n      <p>Here's what I've been learning recently...</p>\n    </article>\n  </div>\n</body>\n</html>`,
+    'style.css': `body { font-family: Georgia, serif; background: #fffdf7; color: #333; }\n.container { max-width: 680px; margin: 0 auto; padding: 40px 20px; }\nh1 { font-size: 2.5rem; margin-bottom: 40px; border-bottom: 2px solid #111; padding-bottom: 16px; }\narticle { margin-bottom: 40px; }\nh2 { font-size: 1.4rem; margin-bottom: 4px; }\ntime { font-size: .8rem; color: #999; display: block; margin-bottom: 12px; }`,
+    'app.js': `console.log('Blog loaded');`
+  },
+  landing: {
+    'index.html': `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>My Product</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <nav>\n    <div class="logo">MyProduct</div>\n    <button class="cta">Get Started</button>\n  </nav>\n  <section class="hero">\n    <h1>The best product ever made.</h1>\n    <p>We solve your biggest problems with elegant simplicity.</p>\n    <button class="cta large">Start for free →</button>\n  </section>\n</body>\n</html>`,
+    'style.css': `* { box-sizing: border-box; margin: 0; padding: 0; }\nbody { font-family: system-ui, sans-serif; background: #000; color: #fff; }\nnav { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; border-bottom: 1px solid #222; }\n.logo { font-weight: 700; font-size: 1.1rem; }\n.hero { min-height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }\nh1 { font-size: clamp(2rem,6vw,5rem); max-width: 700px; margin-bottom: 20px; }\np { color: #888; font-size: 1.1rem; margin-bottom: 32px; }\n.cta { background: #fff; color: #000; border: none; padding: 10px 22px; border-radius: 6px; font-weight: 600; cursor: pointer; }\n.cta.large { padding: 14px 32px; font-size: 1rem; }`,
+    'app.js': `document.querySelectorAll('.cta').forEach(b => b.addEventListener('click', () => alert('Signup coming soon!')));`
+  }
+};
+
+// Mock database
+const DB = {
+  users: [
+    { id: 'u1', email: 'user@demo.com', password: 'demo1234', username: 'demouser', role: 'user', status: 'active', createdAt: '2026-01-15', sites: ['s1','s2'] },
+    { id: 'u2', email: 'admin@freehost.com', password: 'admin123', username: 'admin', role: 'admin', status: 'active', createdAt: '2025-12-01', sites: ['s3'] },
+    { id: 'u3', email: 'alice@dev.io', password: 'pass', username: 'alice', role: 'user', status: 'active', createdAt: '2026-02-10', sites: ['s4','s5'] },
+    { id: 'u4', email: 'bob@mail.com', password: 'pass', username: 'bob', role: 'user', status: 'suspended', createdAt: '2026-03-02', sites: [] },
+    { id: 'u5', email: 'carol@web.dev', password: 'pass', username: 'carol', role: 'user', status: 'active', createdAt: '2026-03-18', sites: ['s6'] },
+  ],
+  sites: [
+    { id: 's1', subdomain: 'myportfolio', owner: 'u1', status: 'live', size: '4.2 MB', lastDeploy: '2026-04-17 14:32', visits: 1240, emoji: '🎨' },
+    { id: 's2', subdomain: 'devblog',     owner: 'u1', status: 'draft', size: '1.8 MB', lastDeploy: '2026-04-10 09:15', visits: 420, emoji: '✍️' },
+    { id: 's3', subdomain: 'admintest',   owner: 'u2', status: 'live', size: '0.5 MB', lastDeploy: '2026-04-18 08:00', visits: 88, emoji: '🔧' },
+    { id: 's4', subdomain: 'aliceco',     owner: 'u3', status: 'live', size: '7.1 MB', lastDeploy: '2026-04-16 11:20', visits: 3200, emoji: '🌿' },
+    { id: 's5', subdomain: 'aliceblog',   owner: 'u3', status: 'live', size: '2.2 MB', lastDeploy: '2026-04-15 17:45', visits: 890, emoji: '📚' },
+    { id: 's6', subdomain: 'carolstore',  owner: 'u5', status: 'live', size: '9.4 MB', lastDeploy: '2026-04-18 06:30', visits: 5100, emoji: '🛍' },
+  ],
+};
+
+/* ─────────────────────────────────────────
+   THEME
+───────────────────────────────────────── */
+function toggleTheme() {
+  const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+}
+
+/* ─────────────────────────────────────────
+   ROUTING
+───────────────────────────────────────── */
+function showPage(name) {
+  document.querySelectorAll('.page,.app-shell,.editor-shell').forEach(p => { p.classList.remove('active'); if (p.id==='page-auth') p.style.display='none'; });
+  const t = document.getElementById(name);
+  if (!t) return;
+  t.classList.add('active');
+  if (name === 'page-auth') t.style.display = 'flex';
+  if (name === 'app-shell') t.style.display = 'flex';
+  if (name === 'editor-shell') t.style.display = 'flex';
+}
+
+function showLanding() { showPage('page-landing'); }
+
+function showAuth(tab='login') {
+  showPage('page-auth');
+  switchAuthTab(tab);
+}
+
+function smoothScroll(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ─────────────────────────────────────────
+   AUTH
+───────────────────────────────────────── */
+function switchAuthTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
+  document.getElementById('login-form').style.display = tab==='login' ? 'block' : 'none';
+  document.getElementById('signup-form').style.display = tab==='signup' ? 'block' : 'none';
+  document.getElementById('auth-error').classList.remove('show');
+}
+
+function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const user = DB.users.find(u => u.email === email && u.password === password);
+  if (!user) { showAuthError('Invalid email or password.'); return; }
+  if (user.status === 'suspended') { showAuthError('Your account has been suspended.'); return; }
+  loginUser(user);
+}
+
+function handleAdminLogin() {
+  const user = DB.users.find(u => u.role === 'admin');
+  loginUser(user);
+}
+
+function handleSignup() {
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const username = document.getElementById('signup-username').value.trim();
+  if (!email || !password || !username) { showAuthError('Please fill in all fields.'); return; }
+  if (password.length < 8) { showAuthError('Password must be at least 8 characters.'); return; }
+  if (DB.users.find(u => u.email === email)) { showAuthError('Email already registered.'); return; }
+  const user = { id:'u'+Date.now(), email, password, username, role:'user', status:'active', createdAt: new Date().toISOString().split('T')[0], sites:[] };
+  DB.users.push(user);
+  loginUser(user);
+  toast('Account created! Welcome to FreeHost 🎉', 'success');
+}
+
+function loginUser(user) {
+  currentUser = user;
+  renderApp();
+  showPage('app-shell');
+}
+
+function handleLogout() {
+  currentUser = null;
+  showPage('page-landing');
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+/* ─────────────────────────────────────────
+   APP RENDER
+───────────────────────────────────────── */
+function renderApp() {
+  // Avatar
+  document.getElementById('user-avatar-init').textContent = (currentUser.username || currentUser.email)[0].toUpperCase();
+  document.getElementById('user-info-name').textContent = currentUser.username || currentUser.email;
+  const roleEl = document.getElementById('user-info-role');
+  roleEl.textContent = currentUser.role === 'admin' ? '⚡ Admin' : 'Free Plan';
+  roleEl.className = 'user-info-role' + (currentUser.role==='admin' ? ' admin' : '');
+
+  // Sidebar nav
+  const nav = document.getElementById('sidebar-nav');
+  if (currentUser.role === 'admin') {
+    nav.innerHTML = adminNavHTML();
+  } else {
+    nav.innerHTML = userNavHTML();
+  }
+
+  // Render default panel
+  if (currentUser.role === 'admin') {
+    switchPanel('admin-overview');
+  } else {
+    switchPanel('user-sites');
+  }
+}
+
+function userNavHTML() {
+  return `
+    <div class="nav-section-label">Personal</div>
+    <div class="nav-item active" onclick="switchPanel('user-sites', this)"><span class="nav-icon">🌐</span> My Sites <span class="nav-badge">${getUserSites().length}</span></div>
+    <div class="nav-item" onclick="switchPanel('user-deploys', this)"><span class="nav-icon">🚀</span> Deployments</div>
+    <div class="nav-item" onclick="switchPanel('user-settings', this)"><span class="nav-icon">⚙</span> Settings</div>
+  `;
+}
+
+function adminNavHTML() {
+  return `
+    <div class="nav-section-label">Admin</div>
+    <div class="nav-item active" onclick="switchPanel('admin-overview', this)"><span class="nav-icon">📊</span> Analytics</div>
+    <div class="nav-item" onclick="switchPanel('admin-users', this)"><span class="nav-icon">👥</span> Users <span class="nav-badge">${DB.users.length}</span></div>
+    <div class="nav-item" onclick="switchPanel('admin-sites', this)"><span class="nav-icon">🌐</span> All Sites <span class="nav-badge">${DB.sites.length}</span></div>
+    <div class="nav-item" onclick="switchPanel('admin-settings', this)"><span class="nav-icon">⚙</span> System Settings</div>
+  `;
+}
+
+function switchPanel(panelId, el) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const panel_titles = {
+    'user-sites': 'My Sites',
+    'user-deploys': 'Deployments',
+    'user-settings': 'Settings',
+    'admin-overview': 'Analytics Overview',
+    'admin-users': 'User Management',
+    'admin-sites': 'Site Management',
+    'admin-settings': 'System Settings',
+  };
+  document.getElementById('topbar-title').textContent = panel_titles[panelId] || panelId;
+  const mc = document.getElementById('main-content');
+  switch(panelId) {
+    case 'user-sites':    mc.innerHTML = renderUserSites(); break;
+    case 'user-deploys':  mc.innerHTML = renderUserDeploys(); break;
+    case 'user-settings': mc.innerHTML = renderUserSettings(); break;
+    case 'admin-overview':mc.innerHTML = renderAdminOverview(); break;
+    case 'admin-users':   mc.innerHTML = renderAdminUsers(); break;
+    case 'admin-sites':   mc.innerHTML = renderAdminSites(); break;
+    case 'admin-settings':mc.innerHTML = renderAdminSettings(); break;
+  }
+  if (panelId === 'admin-overview') drawCharts();
+}
+
+/* ─────────────────────────────────────────
+   USER PANELS
+───────────────────────────────────────── */
+function getUserSites() {
+  return DB.sites.filter(s => s.owner === currentUser.id);
+}
+
+function renderUserSites() {
+  const sites = getUserSites();
+  const emptyState = !sites.length ? `<div class="empty-state"><div class="empty-state-icon">🌍</div><h3>No sites yet</h3><p>Create your first site to get started.</p><button class="btn btn-primary" onclick="openModal('modal-newsite')">Create Site</button></div>` : '';
+  const sitesHTML = sites.map(site => `
+    <div class="site-row" id="srow-${site.id}">
+      <div class="site-row-icon">${site.emoji}</div>
+      <div class="site-row-info">
+        <div class="site-row-name">${site.subdomain}</div>
+        <div class="site-row-url">${site.subdomain}.freehost.com</div>
+        <div class="site-row-meta">Last deployed: ${site.lastDeploy} · ${site.size} · ${site.visits.toLocaleString()} visits</div>
+      </div>
+      <span class="site-status ${site.status}">${site.status}</span>
+      <div class="site-row-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openEditor('${site.id}')">Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick="openDomainModal('${site.id}')">Domain</button>
+        <button class="btn btn-ghost btn-sm" onclick="visitSite('${site.subdomain}')">Visit ↗</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDeleteSite('${site.id}')">Delete</button>
+      </div>
+    </div>
+  `).join('');
+  return `
+    <div class="dash-greeting"><h2>Good day, ${currentUser.username} 👋</h2><p>Manage and deploy your sites from here.</p></div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-box-value">${sites.length}</div><div class="stat-box-label">Total Sites</div></div>
+      <div class="stat-box"><div class="stat-box-value">${sites.filter(s=>s.status==='live').length}</div><div class="stat-box-label">Live</div><div class="stat-box-trend">↑ all healthy</div></div>
+      <div class="stat-box"><div class="stat-box-value">${sites.reduce((a,s)=>a+s.visits,0).toLocaleString()}</div><div class="stat-box-label">Total Visits</div></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div style="font-weight:600;font-size:.9rem;">Your Sites</div>
+      <button class="btn btn-primary btn-sm" onclick="openModal('modal-newsite')">+ New Site</button>
+    </div>
+    <div class="sites-list">${sitesHTML}${emptyState}</div>
+  `;
+}
+
+function renderUserDeploys() {
+  const sites = getUserSites();
+  const logs = sites.flatMap(s => [
+    { site: s.subdomain, action: 'Deployed', time: s.lastDeploy, status: 'success' },
+    { site: s.subdomain, action: 'Build started', time: s.lastDeploy, status: 'info' },
+  ]).sort((a,b) => b.time.localeCompare(a.time));
+
+  return `
+    <div style="margin-bottom:24px;"><h2 style="font-family:var(--fd);font-size:1.5rem;font-weight:400;margin-bottom:4px;">Deployments</h2><p style="color:var(--text2);font-size:.9rem;">Your deployment history across all sites.</p></div>
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead><tr><th>SITE</th><th>ACTION</th><th>TIME</th><th>STATUS</th></tr></thead>
+        <tbody>
+          ${logs.map(l=>`<tr><td><span style="font-family:var(--fm);font-size:.8rem;">${l.site}.freehost.com</span></td><td>${l.action}</td><td style="color:var(--text2);font-size:.8rem;">${l.time}</td><td><span class="tag ${l.status==='success'?'tag-live':'tag-draft'}">${l.status}</span></td></tr>`).join('')}
+          ${!logs.length ? '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text3)">No deployments yet.</td></tr>' : ''}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderUserSettings() {
+  return `
+    <div style="margin-bottom:24px;"><h2 style="font-family:var(--fd);font-size:1.5rem;font-weight:400;margin-bottom:4px;">Account Settings</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px;">
+        <h3 style="font-size:.9rem;font-weight:600;margin-bottom:18px;">Profile</h3>
+        <div class="form-group"><label>Username</label><input type="text" value="${currentUser.username}"></div>
+        <div class="form-group"><label>Email</label><input type="email" value="${currentUser.email}"></div>
+        <button class="btn btn-primary btn-sm" onclick="toast('Profile saved!','success')">Save Changes</button>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px;">
+        <h3 style="font-size:.9rem;font-weight:600;margin-bottom:18px;">Usage</h3>
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:6px;"><span>Storage</span><span style="color:var(--text2);">14.2 / 100 MB</span></div>
+          <div style="background:var(--bg4);border-radius:100px;height:6px;"><div style="width:14%;background:var(--accent);height:100%;border-radius:100px;"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:6px;"><span>Bandwidth</span><span style="color:var(--text2);">1.2 / 10 GB</span></div>
+          <div style="background:var(--bg4);border-radius:100px;height:6px;"><div style="width:12%;background:var(--blue);height:100%;border-radius:100px;"></div></div>
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px;">
+        <h3 style="font-size:.9rem;font-weight:600;margin-bottom:18px;">Password</h3>
+        <div class="form-group"><label>Current Password</label><input type="password" placeholder="••••••••"></div>
+        <div class="form-group"><label>New Password</label><input type="password" placeholder="••••••••"></div>
+        <button class="btn btn-primary btn-sm" onclick="toast('Password updated!','success')">Update Password</button>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px;">
+        <h3 style="font-size:.9rem;font-weight:600;margin-bottom:18px;">Danger Zone</h3>
+        <p style="font-size:.82rem;color:var(--text2);margin-bottom:14px;">Once you delete your account, all your sites and data will be permanently removed.</p>
+        <button class="btn btn-danger btn-sm" onclick="toast('Contact support to delete your account.','error')">Delete Account</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ─────────────────────────────────────────
+   ADMIN PANELS
+───────────────────────────────────────── */
+function renderAdminOverview() {
+  const totalBW = '84.2 GB';
+  const newToday = 3;
+  return `
+    <div class="admin-banner">🛡 You are viewing the Admin Dashboard. Handle with care.</div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-box-value">${DB.users.length}</div><div class="stat-box-label">Total Users</div><div class="stat-box-trend">↑ +3 today</div></div>
+      <div class="stat-box"><div class="stat-box-value">${DB.sites.length}</div><div class="stat-box-label">Total Sites</div></div>
+      <div class="stat-box"><div class="stat-box-value">${totalBW}</div><div class="stat-box-label">Bandwidth Used</div></div>
+      <div class="stat-box"><div class="stat-box-value">99.8%</div><div class="stat-box-label">Uptime</div><div class="stat-box-trend" style="color:var(--green);">↑ healthy</div></div>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-card-title">New Sites — Last 30 Days</div>
+        <div class="bar-chart" id="chart-sites-bar"></div>
+        <div class="chart-labels" id="chart-sites-labels"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">Storage by Type</div>
+        <div class="donut-wrap">
+          <div class="donut"></div>
+          <div class="donut-legend">
+            <div class="donut-item"><div class="donut-dot" style="background:var(--accent)"></div>HTML/CSS (64%)</div>
+            <div class="donut-item"><div class="donut-dot" style="background:var(--blue)"></div>JavaScript (16%)</div>
+            <div class="donut-item"><div class="donut-dot" style="background:var(--purple)"></div>Images (14%)</div>
+            <div class="donut-item"><div class="donut-dot" style="background:var(--bg4)"></div>Other (6%)</div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">Bandwidth per Site (MB)</div>
+        <div class="bar-chart" id="chart-bw-bar"></div>
+        <div class="chart-labels" id="chart-bw-labels"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">User Signups — Last 30 Days</div>
+        <div class="bar-chart" id="chart-users-bar"></div>
+        <div class="chart-labels" id="chart-users-labels"></div>
+      </div>
+    </div>
+  `;
+}
+
+function drawCharts() {
+  // Sites per day (mock data)
+  const days30 = Array.from({length:30},(_,i)=>{
+    const d = new Date(Date.now() - (29-i)*86400000);
+    return { label: d.getDate().toString(), val: Math.floor(Math.random()*8)+1 };
+  });
+  drawBarChart('chart-sites-bar','chart-sites-labels',days30,'var(--accent)');
+
+  // Bandwidth per site
+  const bwData = DB.sites.map(s=>({ label: s.subdomain.slice(0,6), val: Math.floor(Math.random()*800)+100 }));
+  drawBarChart('chart-bw-bar','chart-bw-labels',bwData,'var(--blue)');
+
+  // User signups
+  const uData = Array.from({length:30},(_,i)=>{
+    const d = new Date(Date.now() - (29-i)*86400000);
+    return { label: d.getDate().toString(), val: Math.floor(Math.random()*5) };
+  });
+  drawBarChart('chart-users-bar','chart-users-labels',uData,'var(--purple)');
+}
+
+function drawBarChart(barId, labelId, data, color) {
+  const barEl = document.getElementById(barId);
+  const labelEl = document.getElementById(labelId);
+  if (!barEl) return;
+  const max = Math.max(...data.map(d=>d.val));
+  barEl.innerHTML = data.map((d,i)=>`<div class="bar" style="height:${(d.val/max)*100}%;background:${color};opacity:${0.4+(d.val/max)*0.6}" title="${d.val}"></div>`).join('');
+  if (labelEl) labelEl.innerHTML = data.map((d,i)=>i%(Math.ceil(data.length/8))===0?`<span class="chart-label">${d.label}</span>`:'<span class="chart-label"></span>').join('');
+}
+
+function renderAdminUsers() {
+  return `
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <h3>All Users (${DB.users.length})</h3>
+        <input class="table-search" placeholder="Search users..." oninput="filterTable(this,'admin-users-tbody')">
+      </div>
+      <table class="data-table">
+        <thead><tr><th>EMAIL</th><th>USERNAME</th><th>ROLE</th><th>SITES</th><th>JOINED</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+        <tbody id="admin-users-tbody">
+          ${DB.users.map(u=>`
+            <tr data-search="${u.email} ${u.username}">
+              <td>${u.email}</td>
+              <td style="font-family:var(--fm);font-size:.8rem;">${u.username}</td>
+              <td><span class="tag ${u.role==='admin'?'tag-admin':'tag-active'}">${u.role}</span></td>
+              <td>${u.sites.length}</td>
+              <td style="color:var(--text2);font-size:.8rem;">${u.createdAt}</td>
+              <td><span class="tag ${u.status==='active'?'tag-active':'tag-suspended'}" id="ustatus-${u.id}">${u.status}</span></td>
+              <td>
+                <div class="table-actions">
+                  <button class="btn btn-ghost btn-sm" onclick="toggleUserStatus('${u.id}')">${u.status==='active'?'Suspend':'Reactivate'}</button>
+                  <button class="btn btn-danger btn-sm" onclick="confirmDeleteUser('${u.id}')">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderAdminSites() {
+  const ownerEmail = id => (DB.users.find(u=>u.id===id)||{}).email || 'unknown';
+  return `
+    <div class="data-table-wrap">
+      <div class="data-table-header">
+        <h3>All Sites (${DB.sites.length})</h3>
+        <input class="table-search" placeholder="Search sites..." oninput="filterTable(this,'admin-sites-tbody')">
+      </div>
+      <table class="data-table">
+        <thead><tr><th>SUBDOMAIN</th><th>OWNER</th><th>SIZE</th><th>STATUS</th><th>LAST DEPLOY</th><th>ACTIONS</th></tr></thead>
+        <tbody id="admin-sites-tbody">
+          ${DB.sites.map(s=>`
+            <tr data-search="${s.subdomain} ${ownerEmail(s.owner)}">
+              <td><span style="font-family:var(--fm);font-size:.82rem;">${s.subdomain}.freehost.com</span></td>
+              <td style="color:var(--text2);font-size:.82rem;">${ownerEmail(s.owner)}</td>
+              <td style="font-family:var(--fm);font-size:.78rem;">${s.size}</td>
+              <td><span class="tag tag-${s.status}">${s.status}</span></td>
+              <td style="color:var(--text2);font-size:.78rem;">${s.lastDeploy}</td>
+              <td>
+                <div class="table-actions">
+                  <button class="btn btn-ghost btn-sm" onclick="adminViewSite('${s.id}')">View Files</button>
+                  <button class="btn btn-danger btn-sm" onclick="confirmAdminDeleteSite('${s.id}')">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderAdminSettings() {
+  const logs = [
+    '[2026-04-18 08:02:11] INFO  Site carolstore deployed by carol@web.dev',
+    '[2026-04-18 08:01:54] INFO  User carol@web.dev logged in',
+    '[2026-04-18 07:55:30] WARN  User bob@mail.com login failed (suspended)',
+    '[2026-04-18 07:42:00] INFO  Site aliceco deployed by alice@dev.io',
+    '[2026-04-18 07:30:15] INFO  New user signup: newdev@mail.com',
+    '[2026-04-18 07:00:00] INFO  System health check: OK',
+    '[2026-04-17 23:59:58] INFO  Daily bandwidth reset',
+    '[2026-04-17 22:10:05] INFO  Site myportfolio deployed by user@demo.com',
+  ];
+  return `
+    <div style="margin-bottom:24px;"><h2 style="font-family:var(--fd);font-size:1.5rem;font-weight:400;margin-bottom:4px;">System Settings</h2></div>
+    <div class="settings-grid">
+      <div class="settings-card">
+        <h3>Global Limits</h3>
+        <div class="form-group"><label>Max Storage per Site (MB)</label><input type="number" value="100"></div>
+        <div class="form-group"><label>Max Bandwidth per Month (GB)</label><input type="number" value="10"></div>
+        <div class="form-group"><label>Max Sites per User</label><input type="number" value="5"></div>
+        <button class="btn btn-primary btn-sm" onclick="toast('Settings saved!','success')">Save Limits</button>
+      </div>
+      <div class="settings-card">
+        <h3>Platform Controls</h3>
+        <div class="settings-row">
+          <div><div class="settings-row-label">Public Registration</div><div class="settings-row-sub">Allow new users to sign up</div></div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label">Maintenance Mode</div><div class="settings-row-sub">Show maintenance page to users</div></div>
+          <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-row-label">Email Notifications</div><div class="settings-row-sub">Notify admins of new signups</div></div>
+          <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="settings-card" style="grid-column:1/-1">
+        <h3>Server Logs (Recent)</h3>
+        <div class="log-viewer">
+          ${logs.map(l=>`<div style="color:${l.includes('WARN')?'var(--orange)':l.includes('ERROR')?'var(--red)':'var(--text2)'};margin-bottom:3px;">${l}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ─────────────────────────────────────────
+   ADMIN ACTIONS
+───────────────────────────────────────── */
+function filterTable(input, tbodyId) {
+  const q = input.value.toLowerCase();
+  document.querySelectorAll(`#${tbodyId} tr`).forEach(tr => {
+    tr.style.display = tr.dataset.search?.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function toggleUserStatus(uid) {
+  const u = DB.users.find(u=>u.id===uid);
+  if (!u) return;
+  u.status = u.status==='active'?'suspended':'active';
+  switchPanel('admin-users');
+  toast(`User ${u.email} ${u.status==='active'?'reactivated':'suspended'}.`, u.status==='active'?'success':'error');
+}
+
+function confirmDeleteUser(uid) {
+  const u = DB.users.find(u=>u.id===uid);
+  openConfirm(`Delete user "${u.email}"?`, 'This will permanently remove the user and all their sites.', () => {
+    DB.users = DB.users.filter(u=>u.id!==uid);
+    DB.sites = DB.sites.filter(s=>s.owner!==uid);
+    switchPanel('admin-users');
+    toast('User deleted.','error');
+  });
+}
+
+function confirmAdminDeleteSite(sid) {
+  const s = DB.sites.find(s=>s.id===sid);
+  openConfirm(`Delete "${s.subdomain}.freehost.com"?`, 'All files for this site will be permanently removed.', () => {
+    DB.sites = DB.sites.filter(s=>s.id!==sid);
+    switchPanel('admin-sites');
+    toast('Site deleted.','error');
+  });
+}
+
+function adminViewSite(sid) {
+  const s = DB.sites.find(s=>s.id===sid);
+  if (!s) return;
+  toast(`Viewing files for ${s.subdomain} (read-only admin mode)`, 'info');
+  openEditor(sid, true);
+}
+
+/* ─────────────────────────────────────────
+   SITE MANAGEMENT
+───────────────────────────────────────── */
+function checkSubdomainAvailability(val) {
+  const msg = document.getElementById('subdomain-avail-msg');
+  const clean = val.toLowerCase().replace(/[^a-z0-9-]/g,'');
+  if (!clean) { msg.textContent=''; return; }
+  const taken = DB.sites.find(s=>s.subdomain===clean);
+  if (taken) { msg.textContent=`✗ "${clean}.freehost.com" is already taken.`; msg.className='domain-avail taken'; }
+  else { msg.textContent=`✓ "${clean}.freehost.com" is available!`; msg.className='domain-avail ok'; }
+}
+
+function createSite() {
+  const subInput = document.getElementById('new-site-subdomain');
+  const template = document.getElementById('new-site-template').value;
+  const sub = subInput.value.toLowerCase().replace(/[^a-z0-9-]/g,'');
+  if (!sub) { toast('Please enter a subdomain.','error'); return; }
+  if (DB.sites.find(s=>s.subdomain===sub)) { toast('Subdomain already taken.','error'); return; }
+  if (currentUser.sites.length >= 5) { toast('Free plan limit: 5 sites.','error'); return; }
+
+  const newSite = {
+    id: 's'+Date.now(), subdomain: sub, owner: currentUser.id,
+    status: 'draft', size: '0 KB', lastDeploy: 'Never',
+    visits: 0, emoji: ['🌐','🎨','✍️','📦','🚀'][Math.floor(Math.random()*5)]
+  };
+  DB.sites.push(newSite);
+  currentUser.sites.push(newSite.id);
+
+  // Seed files from template
+  editorFiles[newSite.id] = JSON.parse(JSON.stringify(TEMPLATE_FILES[template] || TEMPLATE_FILES.blank));
+
+  closeModal('modal-newsite');
+  subInput.value = '';
+  toast(`Site "${sub}.freehost.com" created! 🎉`, 'success');
+  openEditor(newSite.id);
+}
+
+function visitSite(subdomain) {
+  toast(`In production: opens ${subdomain}.freehost.com in new tab.`, 'info');
+}
+
+function openDomainModal(siteId) {
+  openModal('modal-domain');
+}
+
+function saveDomain() {
+  const d = document.getElementById('custom-domain-input').value.trim();
+  if (!d) { toast('Please enter a domain.','error'); return; }
+  closeModal('modal-domain');
+  toast(`DNS instructions sent for ${d}. CNAME: cname.freehost.com`, 'success');
+}
+
+function confirmDeleteSite(sid) {
+  const s = DB.sites.find(s=>s.id===sid);
+  if (!s) return;
+  openConfirm(`Delete "${s.subdomain}.freehost.com"?`, 'All files will be permanently removed.', () => {
+    DB.sites = DB.sites.filter(s=>s.id!==sid);
+    currentUser.sites = currentUser.sites.filter(id=>id!==sid);
+    switchPanel('user-sites');
+    toast('Site deleted.','error');
+  });
+}
+
+/* ─────────────────────────────────────────
+   CODE EDITOR
+───────────────────────────────────────── */
+function openEditor(siteId, readOnly=false) {
+  editorSite = DB.sites.find(s=>s.id===siteId);
+  if (!editorSite) return;
+
+  // Ensure files exist
+  if (!editorFiles[siteId]) {
+    editorFiles[siteId] = JSON.parse(JSON.stringify(TEMPLATE_FILES.blank));
+  }
+
+  document.getElementById('ed-site-name').textContent = editorSite.subdomain;
+  document.getElementById('ed-site-url').textContent = editorSite.subdomain+'.freehost.com';
+
+  showPage('editor-shell');
+  renderFileTree(siteId);
+
+  // Open index.html by default
+  const files = Object.keys(editorFiles[siteId]);
+  openFile(files.includes('index.html') ? 'index.html' : files[0]);
+}
+
+function renderFileTree(siteId) {
+  const files = editorFiles[siteId] || {};
+  const items = document.getElementById('file-tree-items');
+  const exts = { html:'🟧', css:'🟦', js:'🟨', md:'📝', json:'🔧', png:'🖼', jpg:'🖼', svg:'🎨' };
+  items.innerHTML = `
+    <div class="ft-item folder"><span class="ft-icon">📁</span> ${editorSite.subdomain}/</div>
+    ${Object.keys(files).map(fname=>`
+      <div class="ft-item ${activeFile===fname?'active':''}" style="padding-left:20px;" onclick="openFile('${fname}')">
+        <span class="ft-icon">${exts[fname.split('.').pop()]||'📄'}</span> ${fname}
+      </div>
+    `).join('')}
+  `;
+}
+
+function openFile(fname) {
+  activeFile = fname;
+  const code = document.getElementById('code-area');
+  const tabs = document.getElementById('code-tabs');
+  const files = editorFiles[editorSite.id];
+
+  code.value = files[fname] || '';
+  updateLineNumbers();
+  refreshPreview();
+  setEditorStatus('saved');
+
+  tabs.innerHTML = `<div class="code-tab active">${fname}<span class="code-tab-close" onclick="event.stopPropagation();">·</span></div>`;
+  renderFileTree(editorSite.id);
+  document.getElementById('preview-url-bar').textContent = `${editorSite.subdomain}.freehost.com/${fname==='index.html'?'':fname}`;
+}
+
+function addNewFile() {
+  const name = prompt('File name (e.g. about.html):');
+  if (!name || !name.includes('.')) { toast('Invalid file name.','error'); return; }
+  if (editorFiles[editorSite.id][name]) { toast('File already exists.','error'); return; }
+  editorFiles[editorSite.id][name] = `<!-- ${name} -->\n`;
+  renderFileTree(editorSite.id);
+  openFile(name);
+  toast(`Created ${name}`,'success');
+}
+
+function onCodeChange() {
+  if (!editorSite || !activeFile) return;
+  editorFiles[editorSite.id][activeFile] = document.getElementById('code-area').value;
+  setEditorStatus('unsaved');
+  updateLineNumbers();
+  clearTimeout(previewTimeout);
+  previewTimeout = setTimeout(refreshPreview, 800);
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => setEditorStatus('saved'), 2000);
+}
+
+function setEditorStatus(s) {
+  const el = document.getElementById('ed-status');
+  el.textContent = s;
+  el.className = `editor-status ${s}`;
+}
+
+function updateLineNumbers() {
+  const code = document.getElementById('code-area').value;
+  const lines = code.split('\n').length;
+  document.getElementById('line-numbers').innerHTML = Array.from({length:lines},(_,i)=>i+1).join('<br>');
+}
+
+function syncLineNumbers() {
+  document.getElementById('line-numbers').scrollTop = document.getElementById('code-area').scrollTop;
+}
+
+function refreshPreview() {
+  if (!editorSite) return;
+  const files = editorFiles[editorSite.id];
+  const html = files['index.html'] || '';
+  const css = files['style.css'] || '';
+  const js = files['app.js'] || '';
+
+  // Inject CSS and JS into HTML for preview
+  let preview = html;
+  if (css && !preview.includes('<link')) {
+    preview = preview.replace('</head>', `<style>${css}</style></head>`);
+  }
+  if (js && !preview.includes('<script src')) {
+    preview = preview.replace('</body>', `<script>${js}<\/script></body>`);
+  }
+
+  const frame = document.getElementById('preview-frame');
+  const blob = new Blob([preview], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  frame.src = url;
+}
+
+function togglePreviewSize() {
+  const pp = document.querySelector('.preview-pane');
+  if (pp.style.width === '100%') { pp.style.width = '45%'; }
+  else { pp.style.width = '100%'; }
+}
+
+function deployFromEditor() {
+  const log = document.getElementById('deploy-log');
+  log.innerHTML = '';
+  log.classList.add('open');
+
+  const steps = [
+    { msg: '▶ Starting deployment...', type: 'info', delay: 0 },
+    { msg: '  Bundling files...', type: 'info', delay: 400 },
+    { msg: `  Uploading to storage (${Object.keys(editorFiles[editorSite.id]).length} files)...`, type: 'info', delay: 900 },
+    { msg: '  Purging CDN cache...', type: 'info', delay: 1400 },
+    { msg: '  Verifying SSL...', type: 'info', delay: 1800 },
+    { msg: `✔ Deployment complete!`, type: 'success', delay: 2300 },
+    { msg: `🌐 Live at: ${editorSite.subdomain}.freehost.com`, type: 'success', delay: 2400 },
+  ];
+
+  steps.forEach(s => {
+    setTimeout(() => {
+      const line = document.createElement('div');
+      line.className = `log-line ${s.type}`;
+      line.textContent = s.msg;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+    }, s.delay);
+  });
+
+  setTimeout(() => {
+    editorSite.status = 'live';
+    editorSite.lastDeploy = new Date().toISOString().replace('T',' ').slice(0,16);
+    setEditorStatus('saved');
+    toast(`🚀 ${editorSite.subdomain}.freehost.com is live!`, 'success');
+  }, 2500);
+}
+
+function closeEditor() {
+  editorSite = null;
+  activeFile = null;
+  document.getElementById('deploy-log').classList.remove('open');
+  showPage('app-shell');
+  switchPanel('user-sites');
+}
+
+/* ─────────────────────────────────────────
+   MODALS / CONFIRM
+───────────────────────────────────────── */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+function openConfirm(title, body, onOk) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-body').textContent = body;
+  document.getElementById('confirm-ok').onclick = () => { onOk(); closeConfirm(); };
+  document.getElementById('confirm-dialog').classList.add('open');
+}
+function closeConfirm() {
+  document.getElementById('confirm-dialog').classList.remove('open');
+}
+
+/* ─────────────────────────────────────────
+   TOAST
+───────────────────────────────────────── */
+function toast(msg, type='info') {
+  const icons = { success:'✅', error:'❌', warning:'⚠️', info:'ℹ️' };
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `<span class="toast-icon">${icons[type]||'ℹ️'}</span><span class="toast-body">${msg}</span><button class="toast-close" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 4500);
+}
+
+/* ─────────────────────────────────────────
+   KEYBOARD SHORTCUTS
+───────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    if (editorSite) { setEditorStatus('saved'); toast('Saved ✓','success'); }
+  }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'Enter') {
+    if (editorSite) deployFromEditor();
+  }
+  if (e.key === 'Escape') {
+    closeModal('modal-newsite');
+    closeModal('modal-domain');
+    closeConfirm();
+  }
+});
+
+// Init
+updateLineNumbers();
+</script>
+</body>
+</html>
